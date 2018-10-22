@@ -65,20 +65,21 @@ var arraySum = function(array) {
 };
 
 // 4. Check if a number is even.
-//TODO
 var isEven = function(n) {
 	// if n is not a number, return undefined
-	console.log('n is', n);
 	if( n === 0 ) {
 		return true;
 	}
 	if( n === 1 ) {
 		return false;
 	}
-	// if( n < 1 ) {
-	// 	return false;
-	// }
-	// return isEven(n/2);
+
+	if(n < 0){
+		return isEven(n+2);
+	} else {
+		return isEven(n-2);
+	}
+
 };
 
 // 5. Sum all integers below a given integer.
@@ -91,44 +92,31 @@ var sumBelow = function(n) {
 
 	if( n < 0 ){
 		return((n+1) + (sumBelow(n+1)));
+	} else {
+		return(n-1 + sumBelow(n-1));
 	}
-
-	return(n-1 + sumBelow(n-1))
 };
 
 // 6. Get the integers within a range (x, y).
 // range(2,9); // [3,4,5,6,7,8]
-
-//TODO: Come back and review
 var range = function(x, y) {
 
-	if (x === y){
+	if( x === y ){
 		return [];
 	}
 
-	if( x+1 === y){
+	if ((x+1) === y || (x-1) === y){
 		return [];
 	}
 
 	if (x > y){
 		var rangeArr = [x-1];
+		return rangeArr.concat(range(x-1,y));
 	} else {
 		var rangeArr = [x+1];
+		return rangeArr.concat(range(x+1,y));
 	}	
-
-	if (x === y-2){
-		return rangeArr;
-	}
-
-  	if (x === y+2){
-		return rangeArr;
-	}
-
-	if (x > y){
-		return rangeArr.concat(range(x-1,y))
-	} else {
-		return rangeArr.concat(range(x+1,y))
-	}
+	
 };
 
 // 7. Compute the exponent of a number.
@@ -137,19 +125,21 @@ var range = function(x, y) {
 // exponent(4,3); // 64
 // https://www.khanacademy.org/computing/computer-science/algorithms/recursive-algorithms/a/computing-powers-of-a-number
 var exponent = function(base, exp) {
+	if(exp === -1){
+		return 1/base;
+	}
 	if(exp === 0){
 		return 1;
 	}
 	if (exp === 1){
 		return base;
 	}
-
 	//Hanlde negative exponents
-	return exponent(Math.power(base, exp), exp-1);
-
-	//Handle non-neg integers
-	return exponent(base * base, exp-1);
-
+	if(exp < 0){
+		return (1/base) * +(exponent(base, exp+1).toFixed(4))
+	} else {
+		return base * exponent(base, exp-1);
+	}
 };
 
 // 8. Determine if a number is a power of two.
@@ -157,30 +147,43 @@ var exponent = function(base, exp) {
 // powerOfTwo(16); // true
 // powerOfTwo(10); // false
 var powerOfTwo = function(n) {
-	// if n < 2
-		// return false;
+	
+	if(n === 2 || n === 1){
+		return true;
+	}
 
-	// if n === 2
-		// return true;
+	if(n < 2 ){
+		return false;
+	}
 
-	// return powerOfTwo(n/2);
+	return powerOfTwo(n/2);
 };
 
 // 9. Write a function that reverses a string.
 var reverse = function(string) {
-	// if string.length === 0
-		// return result;
-	// result = string.slice()
-
+	var newStr = '';
+  	if (string.length === 0){
+    	return newStr;
+  	}
+  	newStr += string.substring(string.length-1, string.length);
+  	string = string.slice(0, string.length-1);
+  	return newStr + reverse(string);
 };
 
 // 10. Write a function that determines if a string is a palindrome.
 var palindrome = function(string) {
-	// if string.length is odd
-		// return false
-
-	// 
-
+  string = string.toLowerCase();
+  string = string.replace(' ','');
+  if (string.length === 0 || string.length === 1){
+    return true;
+  }
+  if (string[0] === string[string.length-1]){
+    string = string.slice(1, -1);
+    console.log(string);
+    return palindrome(string);
+  } else {
+    return false;
+  }
 };
 
 // 11. Write a function that returns the remainder of x divided by y without using the
@@ -190,6 +193,53 @@ var palindrome = function(string) {
 // modulo(22,6) // 4
 var modulo = function(x, y) {
 
+	if(y === 0 && x === 0){
+		return NaN;
+	}
+
+	if(y === 1){
+		return 0;
+	}
+	
+	if( x >= 0 ){
+
+		if(x > y ){
+			return modulo(x - y, y);
+		} else {
+			return x;
+		}
+	}
+
+	if( x < 0 ){
+
+		if (y < 0){
+
+			if(y < 0 && y > x){
+				return x - y;
+			}
+
+			if( y < 0 && x > y){
+				return x;
+			}
+
+			if( x < y ){
+				return modulo(x+y, y);
+			}
+		} else {
+
+			if(y > 0 && x < y){
+				if(x === 0){
+					return 0;
+				} else if (x !== 0){
+					return modulo(y+x, y);
+				}
+				
+			} 
+		}
+
+		
+		
+	}
 };
 
 // ------------------------------------------------------------------------------------
